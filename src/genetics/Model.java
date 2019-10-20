@@ -21,6 +21,12 @@ public class Model {
     //Al igual que el tipo de restricción (<=, >=)
     //Como arreglo bidimensional
     
+    //Límites inferiores
+    ArrayList aj;
+    
+    //Límites superiores
+    ArrayList bj;
+    
     
     public Model(){
         
@@ -42,12 +48,13 @@ public class Model {
     public ArrayList<ArrayList> getRest() {
         return rest;
     }
-    
-    
-    
-    
-    
-    
-    
+
+    public ArrayList getAj() {
+        return aj;
+    }
+
+    public ArrayList getBj() {
+        return bj;
+    }
     
 }
