@@ -27,6 +27,12 @@ public class Model {
     //Límites superiores
     ArrayList bj;
     
+    //Bits de Presición
+    int pre;
+    
+    //Número de Individuos
+    int numInd;
+    
     
     public Model(){
         
@@ -55,6 +61,14 @@ public class Model {
 
     public ArrayList getBj() {
         return bj;
+    }
+
+    public int getPre() {
+        return pre;
+    }
+
+    public int getNumInd() {
+        return numInd;
     }
     
 }
