@@ -18,13 +18,16 @@ public class Genetics {
         int bits;                       //Bits totales de cada Individuo
         int iter;                       //Número de iteración
         int numsurv;                    //Número de sobrevievientes
+        
         int[] mj;                       //Bits de cromosomas
         int[] surv;                     //Sobrevivientes
         int[][] individuals;            //Datos de cada individuo
         int[][] indaux;                 //Auxiliar para los individuos
+        
         float[] zjcol;                  //Columna Zj
         float[][] variables;            //Variables de cada individuo
         float[][] table;                //Tabla %Zj %Zjacm aleatorio y vector'
+        
         boolean[] accom;                //Cumplimiento de restricciones
         boolean accAux;                 //Resumen de cumplimientos
         
@@ -123,155 +126,199 @@ public class Genetics {
             }
         }
         
-        //Impresión de tabla y obtención de la columna zj
-        zjcol = printTable(iter, variables, model.getZ());
-        
-        //Calculo de la segunda parte de la tabla
-        //%zj
-        for (int i = 0; i < ind; i++) {
-            table[i][0] = zjcol[i] / zjcol[zjcol.length - 1];
-        }
-        
-        //%zjacm
-        for (int i = 0; i < ind; i++) {
-            if(i == 0){
-                table[i][1] = table[i][0];
-            } else {
-                table[i][1] = table[i][0] + table[i - 1][1];
+        while(iter < 5){                    ////////////////////CAMBIAR A 100, 5 PA PROBAR
+            //Impresión de tabla y obtención de la columna zj
+            zjcol = printTable(iter, variables, model.getZ());
+            iter++;
+
+            //Calculo de la segunda parte de la tabla
+            //%zj
+            for (int i = 0; i < ind; i++) {
+                table[i][0] = zjcol[i] / zjcol[zjcol.length - 1];
             }
-        }
-        
-        //aleatorio
-        for (int i = 0; i < ind; i++) {
-            table[i][2] = rand.nextFloat();
-        }
-        
-        //vector'
-        for (int i = 0; i < ind; i++) {
-            for (int j = 0; j < ind; j++) {
-                float limsup;
-                float liminf;
-                
-                if(j == 0){
-                    liminf = 0;
-                    limsup = table[j][1];
+
+            //%zjacm
+            for (int i = 0; i < ind; i++) {
+                if(i == 0){
+                    table[i][1] = table[i][0];
                 } else {
-                    liminf = table[j - 1][1];
-                    limsup = table[j][1];
-                }
-                
-                if(table[i][2] > liminf && table[i][2] <= limsup){
-                    table[i][3] = j;
+                    table[i][1] = table[i][0] + table[i - 1][1];
                 }
             }
-        }
-        
-        //Obtención de sobrevivientes
-        //Inicialización
-        numsurv = 0;
-        for (int i = 0; i < surv.length; i++) {
-            surv[i] = -1;
-        }
-        
-        for (int i = 0; i < ind; i++) {
-            int cont;
-            
-            cont = 0;
-            for (int j = 0; j < ind; j++) {
-                if ((int)table[i][3] == surv[j]) {
-                    cont++;
+
+            //aleatorio
+            for (int i = 0; i < ind; i++) {
+                table[i][2] = rand.nextFloat();
+            }
+
+            //vector'
+            for (int i = 0; i < ind; i++) {
+                for (int j = 0; j < ind; j++) {
+                    float limsup;
+                    float liminf;
+
+                    if(j == 0){
+                        liminf = 0;
+                        limsup = table[j][1];
+                    } else {
+                        liminf = table[j - 1][1];
+                        limsup = table[j][1];
+                    }
+
+                    if(table[i][2] > liminf && table[i][2] <= limsup){
+                        table[i][3] = j;
+                    }
                 }
             }
-            
-            if(cont == 0){
-                surv[numsurv] = (int)table[i][3];
-                numsurv++;
+
+            //Obtención de sobrevivientes
+            //Inicialización
+            numsurv = 0;
+            for (int i = 0; i < surv.length; i++) {
+                surv[i] = -1;
             }
-        }
-        
-        //Asignación vectores'
-        //Copia como auxiliar
-        for (int i = 0; i < ind; i++) {
-            for (int j = 0; j < bits; j++) {
-                indaux[i][j] = individuals[i][j];
+
+            for (int i = 0; i < ind; i++) {
+                int cont;
+
+                cont = 0;
+                for (int j = 0; j < ind; j++) {
+                    if ((int)table[i][3] == surv[j]) {
+                        cont++;
+                    }
+                }
+
+                if(cont == 0){
+                    surv[numsurv] = (int)table[i][3];
+                    numsurv++;
+                }
             }
-        }
-        
-        //Asignación
-        for (int i = 0; i < ind; i++) {
-            if(surv[i] == -1){
-                break;
-            } else {
+
+            //Asignación vectores'
+            //Copia como auxiliar
+            for (int i = 0; i < ind; i++) {
                 for (int j = 0; j < bits; j++) {
-                    individuals[i][j] = indaux[surv[i]][j];
+                    indaux[i][j] = individuals[i][j];
                 }
             }
-        }
-        
-        //Mutación o cruce
-        for (int i = numsurv; i < ind; i++) {
-            int r;
-            
-            //Si solo sobrevive uno, no puede haber cruce
-            if(numsurv > 1){
-                r = rand.nextInt(2);
-            } else {
-                r = 0;
+
+            //Asignación
+            for (int i = 0; i < ind; i++) {
+                if(surv[i] == -1){
+                    break;
+                } else {
+                    for (int j = 0; j < bits; j++) {
+                        individuals[i][j] = indaux[surv[i]][j];
+                    }
+                }
             }
-            
-            if (r == 0) { //Mutación
-                int v, bit;
-                
-                v   = rand.nextInt(numsurv); //Vector sobreviviente a mutar
-                bit = rand.nextInt(bits);    //Bit que mutará
-                
-                for (int j = 0; j < bits; j++) {
-                    if(j == bit){
-                        if(indaux[surv[v]][j] == 0){
-                            individuals[i][j] = 1;
+
+            accAux = false;
+            for (int i = 0; i < ind; i++) {
+                accom[i] = false;
+            }
+
+            while(!accAux){
+                //Mutación o cruce
+                for (int i = numsurv; i < ind; i++) {
+                    int r;
+
+                    if(!accom[i]){
+                        //Si solo sobrevive uno, no puede haber cruce
+                        if(numsurv > 1){
+                            r = rand.nextInt(2);
                         } else {
-                            individuals[i][j] = 0;
+                            r = 0;
                         }
-                    } else {
-                        individuals[i][j] = indaux[surv[v]][j];
+
+                        if (r == 0) { //Mutación
+                            int v, bit;
+
+                            v   = rand.nextInt(numsurv); //Vector sobreviviente a mutar
+                            bit = rand.nextInt(bits);    //Bit que mutará
+
+                            for (int j = 0; j < bits; j++) {
+                                if(j == bit){
+                                    if(indaux[surv[v]][j] == 0){
+                                        individuals[i][j] = 1;
+                                    } else {
+                                        individuals[i][j] = 0;
+                                    }
+                                } else {
+                                    individuals[i][j] = indaux[surv[v]][j];
+                                }
+                            }
+
+                        } else {      //Cruce
+                            int v1, v2, bit;
+
+                            v1  = rand.nextInt(numsurv); //Primer vector a cruzar
+                            v2  = rand.nextInt(numsurv); //Segundo vector a cruzar
+                            bit = rand.nextInt(bits);    //Bit donde se cruzarán
+
+                            //Hasta que sean diferentes vectores
+                            while (v1 == v2){
+                                v2 = rand.nextInt(numsurv);
+                            }
+
+                            for (int j = 0; j < bits; j++) {
+                                if(j < bit){
+                                    individuals[i][j] = indaux[surv[v1]][j];
+                                } else {
+                                    individuals[i][j] = indaux[surv[v2]][j];
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+                //Actualización de cada variable para cada individuo
+                for (int i = 0; i < ind; i++) {
+                    for (int j = 0; j < num; j++) {
+                        int subDec;             //Subcadena decimal
+                        int[] subBin;           //Subcadena binaria
+                        int index;
+
+                        subBin = new int[mj[j]];
+
+                        //Posicionamiento del index
+                        index = 0;
+                        for (int k = 0; k < j; k++) {
+                            index = index + mj[k];
+                        }
+
+                        //Extracción de la subcadena de bits correspondiente
+                        for (int k = 0; k < mj[j]; k++) {
+                            subBin[k] = individuals[i][index + k];
+                        }
+
+                        //Subcadena en decimal
+                        subDec = Integer.parseInt(Arrays.toString(subBin), 2);
+
+                        //Obtención de variable
+                        variables[i][j] = ((float) bj.get(j) - (float) aj.get(j))/((float) Math.pow(2, mj[j]) - 1);
+                        variables[i][j] = variables[i][j] * subDec;
+                        variables[i][j] = (float) aj.get(j) + variables[i][j];
                     }
                 }
-                
-            } else {      //Cruce
-                int v1, v2, bit;
-                
-                v1  = rand.nextInt(numsurv); //Primer vector a cruzar
-                v2  = rand.nextInt(numsurv); //Segundo vector a cruzar
-                bit = rand.nextInt(bits);    //Bit donde se cruzarán
-                
-                //Hasta que sean diferentes vectores
-                while (v1 == v2){
-                    v2 = rand.nextInt(numsurv);
+
+                //Evaluación en las restricciones
+                for (int i = 0; i < ind; i++) {
+                    accom[i] = evaluation(num, variables[i], model.getRest());
                 }
-                
-                for (int j = 0; j < bits; j++) {
-                    if(j < bit){
-                        individuals[i][j] = indaux[surv[v1]][j];
-                    } else {
-                        individuals[i][j] = indaux[surv[v2]][j];
+
+                //Resumen de los cumplimientos
+                accAux = true;
+                for (int i = 0; i < accom.length; i++) {
+                    if(!accom[i]){
+                        accAux = false;
+                        break;
                     }
                 }
             }
-            
         }
-        
-        //Solo falta ciclar:
-        //  Volver a obtener las variables de los individuos
-        //  Volver a checarlas con las restricciones
-        //  Si no cumplen volver a hacer mutación o cruce
-        //  Cuando cumplan todas volver a hacer tabla
-        //  Volver a hacer segunda parte de la tabla
-        //  Volver a sacar sobrevivientes
-        //  Asignarlos
-        //  mutación o cruce
-        //  repetir
-        
-        
+        //FIN
     }
     
     public static boolean evaluation(int num, float[] vars, ArrayList<ArrayList> res){
