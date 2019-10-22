@@ -33,14 +33,22 @@ public class Model {
     //Número de Individuos
     int numInd;
     
+    //Número de poblaciones
+    int numPob;
     
-    public Model(int numVar, int numRest, ArrayList<ArrayList> rest, int pre, int numInd, ArrayList z){
+    //Opción maximizar o minimizar, 0-min   1-max
+    int opcMM;
+    
+    
+    public Model(int numVar, int numRest, ArrayList<ArrayList> rest, int pre, int numInd, int numPob, int opcMM, ArrayList z){
         this.numVar = numVar;
         this.numRest = numRest;
         this.rest = rest;
         this.pre = pre;
         this.numInd = numInd;
         this.z = z;
+        this.numPob = numPob;
+        this.opcMM = opcMM;
         
         aj = new ArrayList();
         for (int i = 0; i < numVar; i++) {
@@ -53,7 +61,9 @@ public class Model {
             aux.add(new ArrayList());
             
             for (int j = 0; j < (numRest-numVar); j++) {
-                aux.get(i).add((double)(rest.get(j).get(numVar+1))/(double)(rest.get(j).get(i)));
+                if( (double)(rest.get(j).get(i)) != 0){
+                    aux.get(i).add((double)(rest.get(j).get(numVar+1))/(double)(rest.get(j).get(i)));
+                }
             }
         }
         
@@ -105,6 +115,14 @@ public class Model {
 
     public int getNumInd() {
         return numInd;
+    }
+
+    public int getNumPob() {
+        return numPob;
+    }
+
+    public int getOpcMM() {
+        return opcMM;
     }
     
 }

@@ -19,6 +19,8 @@ public class UICaptura extends JFrame implements ActionListener{
     public int noVar;
     public int individuos;
     public int precision;
+    public int poblaciones;
+    public int opc;             //0-Min     1-max
     
     public ArrayList<ArrayList> restricciones;
     public ArrayList z;
@@ -87,13 +89,23 @@ public class UICaptura extends JFrame implements ActionListener{
         
         do{
             try{
-                individuos = Integer.parseInt(JOptionPane.showInputDialog(null, "Tamaño de la población"));
+                individuos = Integer.parseInt(JOptionPane.showInputDialog(null, "Número de individuos"));
                 
             }catch(Exception e){
                 JOptionPane.showMessageDialog(null, "Introduzca un número válido");
             }
             
         }while( individuos < 1 );
+        
+        do{
+            try{
+                poblaciones = Integer.parseInt(JOptionPane.showInputDialog(null, "Número de poblaciones"));
+                
+            }catch(Exception e){
+                JOptionPane.showMessageDialog(null, "Introduzca un número válido");
+            }
+            
+        }while( poblaciones < 1 );
         
         restricciones = new ArrayList<ArrayList>();
         z = new ArrayList();
@@ -265,9 +277,11 @@ public class UICaptura extends JFrame implements ActionListener{
                 else{
                     if( minMax.getSelectedItem().toString().equals("Max") ){
                         z.add(Double.parseDouble(zFields[i].getText().trim()));
+                        opc = 1;
                     }
                     else if( minMax.getSelectedItem().toString().equals("Min") ){
                         z.add(-1*Double.parseDouble(zFields[i].getText().trim()));
+                        opc = 0;
                     }
                 }
             }
