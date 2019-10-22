@@ -10,8 +10,11 @@ public class Genetics {
     public static void main(String[] args) throws InterruptedException {
         
         UICaptura ui = new UICaptura(); //Interfaz de captura
-        Thread.sleep(30000);            //Tiempo para capturar las restricciones
-        Model model = new Model(ui.noVar, ui.noVar+ui.noRes, ui.restricciones, ui.precision, ui.individuos);      //Modelo
+        
+        while(ui.isDisplayable()){}
+        
+        Model model = new Model(ui.noVar, ui.noVar+ui.noRes, ui.restricciones, ui.precision, ui.individuos, ui.z);      //Modelo
+        
         ArrayList aj, bj;               //Límites
         
         int num;                        //Número de Variables
@@ -26,9 +29,9 @@ public class Genetics {
         int[][] individuals;            //Datos de cada individuo
         int[][] indaux;                 //Auxiliar para los individuos
         
-        float[] zjcol;                  //Columna Zj
-        float[][] variables;            //Variables de cada individuo
-        float[][] table;                //Tabla %Zj %Zjacm aleatorio y vector'
+        double[] zjcol;                 //Columna Zj
+        double[][] variables;           //Variables de cada individuo
+        double[][] table;               //Tabla %Zj %Zjacm aleatorio y vector'
         
         boolean[] accom;                //Cumplimiento de restricciones
         boolean accAux;                 //Resumen de cumplimientos
@@ -49,8 +52,8 @@ public class Genetics {
         
         mj    = new int[num];
         surv  = new int[ind];
-        //zjcol = new float[ind + 1];
-        table = new float[ind][4];
+        //zjcol = new double[ind + 1];
+        table = new double[ind][4];
         
         //Calculo de los bits de coromosomas para cada variable
         for (int i = 0; i < num; i++) {
@@ -64,7 +67,7 @@ public class Genetics {
         
         individuals = new int[ind][bits];
         indaux      = new int[ind][bits];
-        variables   = new float[ind][num];
+        variables   = new double[ind][num];
         accom       = new boolean[ind];
         
         //Inicialización
@@ -113,9 +116,9 @@ public class Genetics {
                     subDec = Integer.parseInt(subBinAux, 2);
 
                     //Obtención de variable
-                    variables[i][j] = ((float) bj.get(j) - (float) aj.get(j))/((float) Math.pow(2, mj[j]) - 1);
+                    variables[i][j] = ((double) bj.get(j) - (double) aj.get(j))/((double) Math.pow(2, mj[j]) - 1);
                     variables[i][j] = variables[i][j] * subDec;
-                    variables[i][j] = (float) aj.get(j) + variables[i][j];
+                    variables[i][j] = (double) aj.get(j) + variables[i][j];
                 }
             }
 
@@ -134,7 +137,7 @@ public class Genetics {
             }
         }
         
-        while(iter < 5){                    ////////////////////CAMBIAR A 100, 5 PA PROBAR
+        while(iter < 100){                    ////////////////////CAMBIAR A 100, 5 PA PROBAR
             //Impresión de tabla y obtención de la columna zj
             zjcol = printTable(iter, variables, model.getZ());
             iter++;
@@ -156,14 +159,14 @@ public class Genetics {
 
             //aleatorio
             for (int i = 0; i < ind; i++) {
-                table[i][2] = rand.nextFloat();
+                table[i][2] = rand.nextDouble();
             }
 
             //vector'
             for (int i = 0; i < ind; i++) {
                 for (int j = 0; j < ind; j++) {
-                    float limsup;
-                    float liminf;
+                    double limsup;
+                    double liminf;
 
                     if(j == 0){
                         liminf = 0;
@@ -309,9 +312,9 @@ public class Genetics {
                         subDec = Integer.parseInt(subBinAux, 2);
 
                         //Obtención de variable
-                        variables[i][j] = ((float) bj.get(j) - (float) aj.get(j))/((float) Math.pow(2, mj[j]) - 1);
+                        variables[i][j] = ((double) bj.get(j) - (double) aj.get(j))/((double) Math.pow(2, mj[j]) - 1);
                         variables[i][j] = variables[i][j] * subDec;
-                        variables[i][j] = (float) aj.get(j) + variables[i][j];
+                        variables[i][j] = (double) aj.get(j) + variables[i][j];
                     }
                 }
 
@@ -333,24 +336,24 @@ public class Genetics {
         //FIN
     }
     
-    public static boolean evaluation(int num, float[] vars, ArrayList<ArrayList> res){
+    public static boolean evaluation(int num, double[] vars, ArrayList<ArrayList> res){
         boolean[] results = new boolean[res.size()];
-        float sum;
+        double sum;
         
         for (int i = 0; i < res.size(); i++) {
             sum = 0;
             for (int j = 0; j < num; j++) {
-                sum = sum + (float)res.get(i).get(j) * vars[j];
+                sum = sum + (double)res.get(i).get(j) * vars[j];
             }
             
             if(res.get(i).get(num).equals("<=")){
-                if(sum <= (float)res.get(i).get(num + 1)){
+                if(sum <= (double)res.get(i).get(num + 1)){
                     results[i] = true;
                 } else {
                     results[i] = false;
                 }
             } else if (res.get(i).get(num).equals(">=")){
-                if(sum >= (float)res.get(i).get(num + 1)){
+                if(sum >= (double)res.get(i).get(num + 1)){
                     results[i] = true;
                 } else {
                     results[i] = false;
@@ -366,19 +369,20 @@ public class Genetics {
         return true;
     }
     
-    public static float[] printTable(int iter, float[][] vars, ArrayList z){
-        float zaux;
-        float sum;
-        float[] zj;
+    public static double[] printTable(int iter, double[][] vars, ArrayList z){
+        int s;
+        double zaux;
+        double sum;
+        double[] zj;
         
-        zj = new float[vars.length + 1];
+        zj = new double[vars.length + 1];
         
         System.out.println("");
         System.out.println(iter + ".");
         
         System.out.print("Vector\t");
         for (int i = 0; i < vars[0].length; i++) {
-            System.out.print("X" + i + "\t");
+            System.out.print("X" + i + "\t\t\t");
         }
         System.out.print("Zj\n");
         
@@ -386,12 +390,12 @@ public class Genetics {
         for (int i = 0; i < vars.length; i++) {
             System.out.print("V" + i + "\t");
             for (int j = 0; j < vars[0].length; j++) {
-                System.out.print((float)vars[i][j] + "\t");
+                System.out.print((double)vars[i][j] + "\t");
             }
             
             zaux = 0;
             for (int j = 0; j < z.size(); j++) {
-                zaux = zaux + ((float)vars[i][j] * (float)z.get(j));
+                zaux = zaux + ((double)vars[i][j] * (double)z.get(j));
             }
             System.out.print(zaux + "\n");
             sum = sum + zaux;
@@ -400,7 +404,7 @@ public class Genetics {
         
         System.out.print("\t");
         for (int i = 0; i < vars[0].length; i++) {
-            System.out.print("\t");
+            System.out.print("\t\t\t");
         }
         System.out.print(sum + "\n");
         zj[vars.length] = sum;

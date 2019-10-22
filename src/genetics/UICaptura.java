@@ -314,7 +314,7 @@ public class UICaptura extends JFrame implements ActionListener{
                     
                     restricciones.get(i).add(k,(double)1);
                     restricciones.get(i).add(">=");
-                    restricciones.get(i).add("0");
+                    restricciones.get(i).add((double)0);
                     
                     k++;
                 }

@@ -34,12 +34,13 @@ public class Model {
     int numInd;
     
     
-    public Model(int numVar, int numRest, ArrayList<ArrayList> rest, int pre, int numInd){
+    public Model(int numVar, int numRest, ArrayList<ArrayList> rest, int pre, int numInd, ArrayList z){
         this.numVar = numVar;
         this.numRest = numRest;
         this.rest = rest;
         this.pre = pre;
         this.numInd = numInd;
+        this.z = z;
         
         aj = new ArrayList();
         for (int i = 0; i < numVar; i++) {
