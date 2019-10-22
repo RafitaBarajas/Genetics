@@ -10,7 +10,7 @@ public class Genetics {
     public static void main(String[] args) throws InterruptedException {
         
         UICaptura ui = new UICaptura(); //Interfaz de captura
-        Thread.sleep(30000);
+        Thread.sleep(30000);            //Tiempo para capturar las restricciones
         Model model = new Model(ui.noVar, ui.noVar+ui.noRes, ui.restricciones, ui.precision, ui.individuos);      //Modelo
         ArrayList aj, bj;               //Límites
         
@@ -32,6 +32,8 @@ public class Genetics {
         
         boolean[] accom;                //Cumplimiento de restricciones
         boolean accAux;                 //Resumen de cumplimientos
+        
+        String subBinAux;               //Auxiliar cadena binaria
         
         Random rand = new Random();
         
@@ -102,9 +104,13 @@ public class Genetics {
                     for (int k = 0; k < mj[j]; k++) {
                         subBin[k] = individuals[i][index + k];
                     }
-
+                    
                     //Subcadena en decimal
-                    subDec = Integer.parseInt(Arrays.toString(subBin), 2);
+                    subBinAux = "";
+                    for (int k = 0; k < mj[j]; k++) {
+                        subBinAux = subBinAux + subBin[k];
+                    }
+                    subDec = Integer.parseInt(subBinAux, 2);
 
                     //Obtención de variable
                     variables[i][j] = ((float) bj.get(j) - (float) aj.get(j))/((float) Math.pow(2, mj[j]) - 1);
@@ -296,7 +302,11 @@ public class Genetics {
                         }
 
                         //Subcadena en decimal
-                        subDec = Integer.parseInt(Arrays.toString(subBin), 2);
+                        subBinAux = "";
+                        for (int k = 0; k < mj[j]; k++) {
+                            subBinAux = subBinAux + subBin[k];
+                        }
+                        subDec = Integer.parseInt(subBinAux, 2);
 
                         //Obtención de variable
                         variables[i][j] = ((float) bj.get(j) - (float) aj.get(j))/((float) Math.pow(2, mj[j]) - 1);
