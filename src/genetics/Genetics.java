@@ -11,7 +11,10 @@ public class Genetics {
         
         UICaptura ui = new UICaptura(); //Interfaz de captura
         
-        while(ui.isDisplayable()){}
+        while(ui.isDisplayable()){
+            System.out.print(".");
+        }
+        System.out.println("");
         
         Model model = new Model(ui.noVar, ui.noVar+ui.noRes, ui.restricciones, ui.precision, ui.individuos, ui.z);      //Modelo
         
@@ -137,7 +140,7 @@ public class Genetics {
             }
         }
         
-        while(iter < 100){                    ////////////////////CAMBIAR A 100, 5 PA PROBAR
+        while(iter < 1000){                    ////////////////////CAMBIAR A 100, 5 PA PROBAR
             //Impresión de tabla y obtención de la columna zj
             zjcol = printTable(iter, variables, model.getZ());
             iter++;

@@ -83,7 +83,7 @@ public class UICaptura extends JFrame implements ActionListener{
                 JOptionPane.showMessageDialog(null, "Introduzca un número válido");
             }
             
-        }while( precision < 1 );
+        }while( precision < 0 );
         
         do{
             try{
