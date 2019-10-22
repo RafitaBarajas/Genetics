@@ -7,9 +7,11 @@ import java.util.Random;
 
 public class Genetics {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         
-        Model model = new Model();      //Modelo
+        UICaptura ui = new UICaptura(); //Interfaz de captura
+        Thread.sleep(30000);
+        Model model = new Model(ui.noVar, ui.noVar+ui.noRes, ui.restricciones, ui.precision, ui.individuos);      //Modelo
         ArrayList aj, bj;               //Límites
         
         int num;                        //Número de Variables

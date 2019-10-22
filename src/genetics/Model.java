@@ -34,7 +34,42 @@ public class Model {
     int numInd;
     
     
-    public Model(){
+    public Model(int numVar, int numRest, ArrayList<ArrayList> rest, int pre, int numInd){
+        this.numVar = numVar;
+        this.numRest = numRest;
+        this.rest = rest;
+        this.pre = pre;
+        this.numInd = numInd;
+        
+        aj = new ArrayList();
+        for (int i = 0; i < numVar; i++) {
+            aj.add((double)0);
+        }
+        
+        ArrayList<ArrayList> aux = new ArrayList();
+        
+        for (int i = 0; i < numVar; i++) {
+            aux.add(new ArrayList());
+            
+            for (int j = 0; j < (numRest-numVar); j++) {
+                aux.get(i).add((double)(rest.get(j).get(numVar+1))/(double)(rest.get(j).get(i)));
+            }
+        }
+        
+        double maxAux;
+        
+        bj = new ArrayList();
+        for (int i = 0; i < aux.size(); i++) {
+            maxAux = (double)aux.get(i).get(0);
+            
+            for (int j = 0; j < aux.get(i).size(); j++) {
+                if( (double)aux.get(i).get(j) > maxAux ){
+                    maxAux = (double)aux.get(i).get(j);
+                }
+            }
+            
+            bj.add(maxAux);
+        }
         
     }
     
